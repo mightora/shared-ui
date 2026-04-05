@@ -231,7 +231,7 @@ mightora-header,
 mightora-author,
 .author-section {
   display: block;
-  background-image: url('https://raw.githubusercontent.com/TechTweedie/techtweedie.github.io/v2/assets/images/author/ian-tweedie-presenting-4.png');
+  background-image: url('https://cdn.jsdelivr.net/gh/mightora/shared-ui@main/ian-tweedie-presenting-4.png');
   background-size: cover;
   background-position: center center;
 }
