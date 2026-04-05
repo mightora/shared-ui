@@ -27,16 +27,25 @@ sections:
     column: 1
     position: 1
     links:
-      - name: "Tools"
-        url: "/tools/"
       - name: "About"
         url: "/about/"
-      - name: "FAQ"
-        url: "/faq/"
+      - name: "Contact"
+        url: "/contact/"
       - name: "Privacy Policy"
-        url: "/privacy/"
-      - name: "Analytics"
-        url: "/analytics/"
+        url: "/privacy-policy/"
+      - name: "Cookie Policy"
+        url: "/cookie-policy/"
+      - name: "Terms"
+        url: "/terms/"
+        
+    - title: "Mightora"
+      column: 1
+      position: 2
+      links:
+        - name: "Tools"
+          url: "https://mightora.io/tools/"
+        - name: "FAQ"
+          url: "https://mightora.io/faq/"
 
   # ── Column 2 (middle) ────────────────────────────────────────
   - title: "Mightora Tools"
@@ -44,17 +53,18 @@ sections:
     position: 1
     links:
       - name: "Pipeline Tools"
-        url: "/tools/cicd/"
+        url: "https://mightora.io/tools/cicd/"
       - name: "PCF Controls"
-        url: "/tools/pcf/"
+        url: "https://mightora.io/tools/pcf/"
       - name: "Power Automate Connectors"
-        url: "/tools/power-automate-connectors/"
+        url: "https://mightora.io/tools/power-automate-connectors/"
       - name: "Power Automate Templates"
-        url: "/tools/power-automate-templates/"
+        url: "https://mightora.io/tools/power-automate-templates/"
       - name: "Developer Tools"
-        url: "/tools/developer/"
+        url: "https://mightora.io/tools/developer/"
       - name: "WiFi Captive Portal Helper ↗"
         url: "http://connect.mightora.io/"
+        
 
   - title: "VS Code Extensions"
     column: 2
