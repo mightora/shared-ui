@@ -161,8 +161,8 @@ class MightoraAuthor extends HTMLElement {
   }
 
   _render(author) {
-    const avatarUrl  = author.image || 'https://techtweedie.github.io/images/author/ian-tweedie-sq2_hu_a380911c6f4726de.png';
-    const blogLogo   = 'https://raw.githubusercontent.com/TechTweedie/techtweedie.github.io/v2/assets/images/site/main-logo.png';
+    const avatarUrl  = author.image || 'https://cdn.jsdelivr.net/gh/mightora/shared-ui@main/ian-tweedie-sq2.png';
+    const blogLogo   = 'https://cdn.jsdelivr.net/gh/mightora/shared-ui@main/main-logo.png';
     const brandLabel = (author.branding && author.branding.label) || 'TechTweedie';
 
     this.innerHTML = `
@@ -195,7 +195,7 @@ class MightoraFooter extends HTMLElement {
     this.setAttribute('role', 'contentinfo');
 
     const yamlUrl = this.getAttribute('yaml-url')
-      || 'https://raw.githubusercontent.com/mightora/mightora.io/refs/heads/main/data/footer.yaml';
+      || 'https://cdn.jsdelivr.net/gh/mightora/shared-ui@main/footer.yaml';
 
     // Preserve any site-specific child HTML (e.g. footer-bottom) so it
     // appears below the remotely-fetched columns and brand logos.
