@@ -38,14 +38,14 @@ sections:
       - name: "Terms"
         url: "/terms/"
         
-    - title: "Mightora"
-      column: 1
-      position: 2
-      links:
-        - name: "Tools"
-          url: "https://mightora.io/tools/"
-        - name: "FAQ"
-          url: "https://mightora.io/faq/"
+  - title: "Mightora"
+    column: 1
+    position: 2
+    links:
+      - name: "Tools"
+        url: "https://mightora.io/tools/"
+      - name: "FAQ"
+        url: "https://mightora.io/faq/"
 
   # ── Column 2 (middle) ────────────────────────────────────────
   - title: "Mightora Tools"
