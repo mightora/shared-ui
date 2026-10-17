@@ -35,7 +35,7 @@
  * </mightora-author>
  *
  * <mightora-footer
- *   yaml-url="https://...">                       (default: mightora.io footer feed)
+ *   yaml-url="https://...">                       (optional CDN fallback; local footer.yaml preferred)
  *   <!-- Site-specific footer bottom goes here as child HTML -->
  *   <div class="container">
  *     <div class="footer-bottom">
@@ -194,22 +194,35 @@ class MightoraFooter extends HTMLElement {
     this.classList.add('site-footer');
     this.setAttribute('role', 'contentinfo');
 
-    const yamlUrl = this.getAttribute('yaml-url')
+    // Every Mightora static build can bundle a validated footer.yaml.
+    // Prefer the local snapshot; retain the supplied URL (or central CDN)
+    // as a fallback for sites that have not adopted the build action yet.
+    // local-yaml-url is useful for apps deployed beneath a route/base path.
+    const localUrl = this.getAttribute('local-yaml-url') || 'footer.yaml';
+    const fallbackUrl = this.getAttribute('yaml-url')
       || 'https://cdn.jsdelivr.net/gh/mightora/shared-ui@main/footer.yaml';
 
-    // Preserve any site-specific child HTML (e.g. footer-bottom) so it
-    // appears below the remotely-fetched columns and brand logos.
+    // Preserve any site-specific child HTML (e.g. footer-bottom).
     const existingContent = this.innerHTML;
 
-    try {
-      const res  = await fetch(yamlUrl);
-      const text = await res.text();
-      const data = (typeof jsyaml !== 'undefined') ? jsyaml.load(text) : JSON.parse(text);
-      this._render(data, existingContent);
-    } catch (_) {
-      // Fetch failed — still set the year in any existing child content
-      this._setYear();
+    for (const url of new Set([localUrl, fallbackUrl])) {
+      try {
+        const res = await fetch(url);
+        if (!res.ok) throw new Error(`Footer fetch failed: ${res.status}`);
+        const text = await res.text();
+        const data = (typeof jsyaml !== 'undefined') ? jsyaml.load(text) : JSON.parse(text);
+        if (!data || !Array.isArray(data.sections) || !data.sections.length) {
+          throw new Error('Invalid footer YAML');
+        }
+        this._render(data, existingContent);
+        return;
+      } catch (_) {
+        // Local resource missing or invalid: try the next source.
+      }
     }
+
+    // No footer feed available — preserve site-specific bottom content.
+    this._setYear();
   }
 
   _render(data, existingContent) {
