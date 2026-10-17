@@ -1,0 +1,49 @@
+name: "Bundle Mightora shared footer"
+description: "Fetch, validate and copy the central footer.yaml into a built static site."
+inputs:
+  output-directory:
+    description: "Existing published site directory (for example dist, _site or public)."
+    required: true
+  ref:
+    description: "Branch, tag or commit of mightora/shared-ui to download."
+    required: false
+    default: "main"
+runs:
+  using: "composite"
+  steps:
+    - name: Bundle validated footer
+      shell: bash
+      env:
+        MIGHTORA_OUTPUT_DIRECTORY: ${{ inputs.output-directory }}
+        MIGHTORA_FOOTER_REF: ${{ inputs.ref }}
+      run: |
+        set -euo pipefail
+        if [[ ! -d "$MIGHTORA_OUTPUT_DIRECTORY" ]]; then
+          echo "::error::Build directory not found: $MIGHTORA_OUTPUT_DIRECTORY"
+          exit 1
+        fi
+        if [[ ! "$MIGHTORA_FOOTER_REF" =~ ^[A-Za-z0-9._/-]+$ ]]; then
+          echo "::error::Invalid footer ref"
+          exit 1
+        fi
+
+        temp_file="$(mktemp)"
+        trap 'rm -f "$temp_file"' EXIT
+        url="https://raw.githubusercontent.com/mightora/shared-ui/${MIGHTORA_FOOTER_REF}/footer.yaml"
+        curl --fail --location --silent --show-error --retry 3 \
+          --connect-timeout 15 --max-time 90 "$url" --output "$temp_file"
+
+        ruby -ryaml -e '
+          data = YAML.safe_load(File.read(ARGV.fetch(0)), aliases: false)
+          abort "Footer YAML must contain a sections array" unless data.is_a?(Hash) && data["sections"].is_a?(Array) && !data["sections"].empty?
+          data["sections"].each_with_index do |section, i|
+            abort "Invalid section #{i}" unless section.is_a?(Hash) && section["title"].is_a?(String) && section["links"].is_a?(Array) && [1, 2, 3].include?(section["column"])
+            section["links"].each_with_index do |link, j|
+              abort "Invalid link #{i}:#{j}" unless link.is_a?(Hash) && link["name"].is_a?(String) && link["url"].is_a?(String) && link["url"].match?(/\Ahttps?:\/\//)
+            end
+          end
+          puts "Validated #{data["sections"].length} footer sections"
+        ' "$temp_file"
+
+        install -m 0644 "$temp_file" "$MIGHTORA_OUTPUT_DIRECTORY/footer.yaml"
+        echo "Bundled footer.yaml into $MIGHTORA_OUTPUT_DIRECTORY"
