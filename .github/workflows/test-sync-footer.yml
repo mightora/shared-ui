@@ -1,0 +1,27 @@
+name: Test shared footer integration
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  footer:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate component JavaScript
+        run: node --check components.js
+      - name: Prepare test site
+        run: |
+          mkdir -p dist
+          printf '<!doctype html><title>Mightora test</title>' > dist/index.html
+      - name: Bundle shared footer
+        uses: ./.github/actions/sync-footer
+        with:
+          output-directory: dist
+      - name: Confirm footer was included
+        run: |
+          test -s dist/footer.yaml
+          cmp -s footer.yaml dist/footer.yaml
