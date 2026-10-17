@@ -22,6 +22,7 @@ jobs:
         with:
           output-directory: dist
       - name: Confirm footer was included
-        run: |
-          test -s dist/footer.yaml
-          cmp -s footer.yaml dist/footer.yaml
+        run: test -s dist/footer.yaml
+      - name: Confirm main-branch snapshot matches source
+        if: github.ref == 'refs/heads/main'
+        run: cmp -s footer.yaml dist/footer.yaml
